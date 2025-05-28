@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Force dark mode colors by default */
+  --foreground-hex: #ffffff;
+  --background-start-hex: #222222; /* Dark gray background */
+  --background-end-hex: #000000; /* Black background */
+}
+
+body {
+  color: var(--foreground-hex);
+  background: linear-gradient(to bottom, transparent, var(--background-end-hex))
+    var(--background-start-hex);
+}
