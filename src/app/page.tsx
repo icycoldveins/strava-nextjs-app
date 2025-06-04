@@ -2,6 +2,7 @@
 
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect } from "react";
+import ActivityHeatmap from "@/components/ActivityHeatmap";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -47,6 +48,9 @@ export default function Home() {
             <h2 className="text-xl font-semibold">Your Strava Dashboard</h2>
             <p className="mt-2">You are successfully logged in with Strava!</p>
           </div>
+          
+          {/* Activity Heatmap */}
+          <ActivityHeatmap />
         </div>
       </div>
     );

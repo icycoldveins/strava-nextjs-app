@@ -14,3 +14,4 @@ body {
   background: linear-gradient(to bottom, transparent, var(--background-end-hex))
     var(--background-start-hex);
 }
+

@@ -15,8 +15,10 @@
     "next": "15.3.2",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
+    "react-calendar-heatmap": "^1.10.0",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
+    "react-tooltip": "^5.28.1",
     "strava-v3": "^2.2.1"
   },
   "devDependencies": {

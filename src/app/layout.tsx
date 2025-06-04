@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className="min-h-screen antialiased">
         <Providers>
-          <main className="flex min-h-screen flex-col">
+          <main className="flex min-h-screen flex-col strava-theme">
             {children}
           </main>
         </Providers>
