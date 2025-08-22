@@ -15,6 +15,7 @@ import { AchievementProgress } from "@/components/achievements/AchievementProgre
 import { BadgeUnlockToast } from "@/components/achievements/BadgeUnlockToast";
 import { useAchievements, useBadgesWithProgress, useAchievementStats } from "@/hooks/useAchievements";
 import { TrainingHeatmap } from "@/components/analytics/TrainingHeatmap";
+import { PRDashboard } from "@/components/analytics/PRDashboard";
 
 interface Stats {
   allTime: {
@@ -428,6 +429,21 @@ export default function Home() {
             className="mb-8"
             measurementPref={measurementPref}
           />
+
+          {/* Personal Records Dashboard Preview */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold">Personal Records</h2>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.location.href = '/personal-records'}
+              >
+                View All PRs
+              </Button>
+            </div>
+            <PRDashboard className="" />
+          </div>
 
           {/* Recent Activities */}
           <Card className="border-0 shadow-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur">
