@@ -399,13 +399,3 @@ export function CreateGoalModal({
   );
 }
 
-// We need to create the Label component
-const Label = ({ children, htmlFor, className, ...props }: React.LabelHTMLAttributes<HTMLLabelElement>) => (
-  <label 
-    htmlFor={htmlFor}
-    className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${className || ''}`}
-    {...props}
-  >
-    {children}
-  </label>
-);

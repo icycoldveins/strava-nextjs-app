@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { formatDistance, formatTime, formatDate, formatElevation, getActivityIcon } from "@/lib/formatters";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { GoalTracker } from "@/components/goals/GoalTracker";
+import { GearTracker } from "@/components/gear/GearTracker";
 import { BadgeGallery } from "@/components/achievements/BadgeGallery";
 import { AchievementProgress } from "@/components/achievements/AchievementProgress";
 import { BadgeUnlockToast } from "@/components/achievements/BadgeUnlockToast";
@@ -322,6 +323,11 @@ export default function Home() {
             activities={activities} 
             measurementPref={measurementPref}
           />
+
+          {/* Gear Tracker */}
+          <div className="mb-8">
+            <GearTracker activities={activities} />
+          </div>
 
           {/* Achievement Progress - Only show if there are badges with progress */}
           {!achievementsLoading && badgesWithProgress.length > 0 && (
