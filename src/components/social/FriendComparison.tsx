@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -101,7 +101,7 @@ export function FriendComparison({ className }: FriendComparisonProps) {
     }
   };
 
-  const calculateComparison = () => {
+  const calculateComparison = useCallback(() => {
     const friendsWithActivities: FriendWithActivities[] = friends.map(friend => ({
       friend,
       activities: friendActivities[friend.id] || [],
@@ -115,7 +115,7 @@ export function FriendComparison({ className }: FriendComparisonProps) {
     );
 
     setComparison(comparisonData);
-  };
+  }, [friends, friendActivities, timePeriod, activityType, selectedFriendId]);
 
   const handleRefresh = () => {
     fetchFriends();
@@ -287,7 +287,7 @@ export function FriendComparison({ className }: FriendComparisonProps) {
             ].map((view) => (
               <button
                 key={view.key}
-                onClick={() => setActiveView(view.key as any)}
+                onClick={() => setActiveView(view.key as 'leaderboard' | 'head-to-head' | 'feed')}
                 className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
                   activeView === view.key
                     ? 'border-primary text-primary'

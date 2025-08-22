@@ -28,6 +28,8 @@ import {
   syncWithStravaGear,
   updateGearDistance
 } from '@/lib/gear';
+import { StravaActivity } from '@/lib/types/strava';
+import type { ActivityWithGear } from '@/lib/gear';
 import { 
   Gear, 
   GearStats, 
@@ -38,7 +40,7 @@ import {
 import { formatDistance } from '@/lib/gear';
 
 interface GearTrackerProps {
-  activities?: any[]; // Activities from Strava to calculate distances
+  activities?: StravaActivity[]; // Activities from Strava to calculate distances
 }
 
 export const GearTracker = ({ activities = [] }: GearTrackerProps) => {
@@ -54,7 +56,7 @@ export const GearTracker = ({ activities = [] }: GearTrackerProps) => {
   
   // Maintenance form state
   const [maintenanceForm, setMaintenanceForm] = useState({
-    type: 'maintenance' as const,
+    type: 'maintenance' as 'maintenance' | 'replacement' | 'repair',
     description: '',
     cost: '',
     resetDistance: false,
@@ -98,7 +100,7 @@ export const GearTracker = ({ activities = [] }: GearTrackerProps) => {
     
     allGear.forEach(gearItem => {
       if (gearItem.stravaId) {
-        const updated = updateGearDistance(gearItem.id, activities);
+        const updated = updateGearDistance(gearItem.id, activities as unknown as ActivityWithGear[]);
         if (updated) {
           hasUpdates = true;
         }

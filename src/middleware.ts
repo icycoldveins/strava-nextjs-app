@@ -1,7 +1,7 @@
 import { withAuth } from "next-auth/middleware";
 
 export default withAuth(
-  function middleware(req) {
+  function middleware() {
     // Custom middleware logic can go here if needed
   },
   {

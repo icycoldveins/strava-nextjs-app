@@ -168,7 +168,13 @@ export const getAllGear = (): Gear[] => {
 
 // Distance Tracking
 
-export const updateGearDistance = (gearId: string, activities: any[]): Gear | null => {
+export interface ActivityWithGear {
+  gear_id?: string;
+  distance?: number;
+  [key: string]: unknown;
+}
+
+export const updateGearDistance = (gearId: string, activities: ActivityWithGear[]): Gear | null => {
   const gear = getGear(gearId);
   if (!gear) return null;
 
@@ -364,7 +370,16 @@ export const getGearStats = (gear: Gear[]): GearStats => {
 
 // Strava Integration
 
-export const syncWithStravaGear = (stravaGearData: any[]): Gear[] => {
+interface StravaGearData {
+  id: string;
+  name: string;
+  brand_name?: string;
+  model_name?: string;
+  distance: number;
+  [key: string]: unknown;
+}
+
+export const syncWithStravaGear = (stravaGearData: StravaGearData[]): Gear[] => {
   const existingGear = getStoredGear();
   const syncedGear: Gear[] = [];
 
@@ -404,12 +419,21 @@ export const syncWithStravaGear = (stravaGearData: any[]): Gear[] => {
 
 // Gear Usage History
 
-export const getGearUsageHistory = (gearId: string, activities: any[]): GearUsageEntry[] => {
+interface ActivityForUsage {
+  id?: string | number;
+  gear_id?: string;
+  distance?: number;
+  moving_time?: number;
+  start_date: string;
+  [key: string]: unknown;
+}
+
+export const getGearUsageHistory = (gearId: string, activities: ActivityForUsage[]): GearUsageEntry[] => {
   return activities
     .filter(activity => activity.gear_id === gearId)
     .map(activity => ({
       gearId,
-      activityId: activity.id,
+      activityId: String(activity.id),
       distance: activity.distance || 0,
       time: activity.moving_time || 0,
       date: activity.start_date

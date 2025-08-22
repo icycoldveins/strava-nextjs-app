@@ -2,7 +2,6 @@ import {
   ActivityWithWeather,
   WeatherData,
   WeatherImpact,
-  PerformanceCorrelation,
   WeatherAnalysis,
 } from './types/weather';
 
@@ -311,7 +310,7 @@ export class WeatherAnalyzer {
       weather_conditions: Partial<WeatherData['main']>;
     };
   } {
-    const seasons = { Spring: [], Summer: [], Fall: [], Winter: [] } as any;
+    const seasons: Record<string, ActivityWithWeather[]> = { Spring: [], Summer: [], Fall: [], Winter: [] };
 
     this.activities.forEach(activity => {
       const month = new Date(activity.start_date).getMonth();
@@ -325,7 +324,11 @@ export class WeatherAnalyzer {
       seasons[season].push(activity);
     });
 
-    const result: any = {};
+    const result: Record<string, {
+      average_pace: number;
+      activity_count: number;
+      weather_conditions: Partial<WeatherData['main']>;
+    }> = {};
 
     Object.entries(seasons).forEach(([season, activities]: [string, ActivityWithWeather[]]) => {
       if (activities.length === 0) {
@@ -467,7 +470,7 @@ export class WeatherAnalyzer {
       correlations,
       seasonal_patterns: seasonalPatterns,
       performance_predictions: {
-        current_conditions: optimalConditions as any, // Placeholder
+        current_conditions: optimalConditions, // Placeholder
         predicted_pace: 0,
         confidence: 0,
       },
@@ -478,7 +481,7 @@ export class WeatherAnalyzer {
 
 // Utility functions
 export function enrichActivitiesWithWeather(
-  activities: any[],
+  activities: ActivityWithWeather[],
   weatherData: Map<number, WeatherData>
 ): ActivityWithWeather[] {
   return activities.map(activity => {
@@ -494,7 +497,7 @@ export function enrichActivitiesWithWeather(
   });
 }
 
-function calculatePerformanceScore(activity: any): number {
+function calculatePerformanceScore(activity: ActivityWithWeather): number {
   // Simple performance score based on pace and heart rate
   const basePace = activity.moving_time / (activity.distance / 1000);
   const hrFactor = activity.average_heartrate ? activity.average_heartrate / 150 : 1;

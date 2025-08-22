@@ -1,4 +1,4 @@
-import { WeatherData, WeatherCache, WeatherServiceConfig, MockWeatherCondition } from './types/weather';
+import { WeatherData, WeatherCache, WeatherServiceConfig } from './types/weather';
 
 class WeatherService {
   private config: WeatherServiceConfig;

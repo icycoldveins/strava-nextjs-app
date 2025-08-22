@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+import type { CustomSession } from '@/lib/auth-types';
+import { StravaGear } from '@/lib/types/strava';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session?.accessToken) {
       return NextResponse.json(
@@ -63,7 +65,7 @@ export async function GET(request: NextRequest) {
 
     // Transform to consistent format
     const allGear = [
-      ...gearData.bikes.map((bike: any) => ({
+      ...gearData.bikes.map((bike: StravaGear) => ({
         id: bike.id,
         name: bike.name,
         brand_name: bike.brand_name,
@@ -75,7 +77,7 @@ export async function GET(request: NextRequest) {
         type: 'bike',
         resource_state: bike.resource_state
       })),
-      ...gearData.shoes.map((shoe: any) => ({
+      ...gearData.shoes.map((shoe: StravaGear) => ({
         id: shoe.id,
         name: shoe.name,
         brand_name: shoe.brand_name,
@@ -102,7 +104,7 @@ export async function GET(request: NextRequest) {
 // POST endpoint to fetch detailed gear information for multiple gear items
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session?.accessToken) {
       return NextResponse.json(

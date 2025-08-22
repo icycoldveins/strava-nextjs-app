@@ -121,9 +121,18 @@ export function getGoalDateRange(
   };
 }
 
+export interface ActivityForGoal {
+  type: string;
+  sport_type?: string;
+  distance?: number;
+  moving_time?: number;
+  start_date: string;
+  [key: string]: unknown;
+}
+
 export function calculateGoalProgress(
   goal: Goal,
-  activities: any[]
+  activities: ActivityForGoal[]
 ): GoalProgress {
   // Filter activities within the goal date range
   const startTime = new Date(goal.startDate).getTime();

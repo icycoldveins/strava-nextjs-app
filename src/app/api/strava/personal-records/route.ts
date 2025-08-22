@@ -1,22 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
+import type { CustomSession } from '@/lib/auth-types';
 import { calculatePersonalRecords } from '@/lib/prCalculations';
 import { Activity } from '@/lib/types/personalRecords';
 import { mockPRAnalysis } from '@/lib/mockPRData';
+import { StravaActivity } from '@/lib/types/strava';
 
 const STRAVA_API_BASE = 'https://www.strava.com/api/v3';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session || !session.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
-    const forceRefresh = searchParams.get('refresh') === 'true';
     const useMockData = searchParams.get('mock') === 'true' || process.env.NODE_ENV === 'development';
     
     // Return mock data for development/testing
@@ -64,7 +65,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Format activities for PR analysis
-        const formattedActivities: Activity[] = pageActivities.map((activity: any) => ({
+        const formattedActivities: Activity[] = pageActivities.map((activity: StravaActivity) => ({
           id: activity.id,
           name: activity.name,
           type: activity.type,
@@ -153,7 +154,7 @@ export async function GET(request: NextRequest) {
 // POST endpoint to manually trigger PR recalculation
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session || !session.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

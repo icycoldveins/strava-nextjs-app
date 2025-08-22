@@ -132,7 +132,7 @@ export function PRCard({ personalRecord, showTrend = true, compact = false }: PR
         </div>
         
         <div className="space-y-2">
-          {recentAttempts.slice(-3).map((attempt, index) => (
+          {recentAttempts.slice(-3).map((attempt) => (
             <div key={attempt.activityId} className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">
                 {new Date(attempt.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}

@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Goal, GoalProgress } from "@/lib/types/goals";
+import { StravaActivity } from "@/lib/types/strava";
 import { getGoals, deleteGoal, calculateGoalProgress } from "@/lib/goals";
+import type { ActivityForGoal } from "@/lib/goals";
 import { GoalCard } from "./GoalCard";
 import { CreateGoalModal } from "./CreateGoalModal";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Target, TrendingUp, Calendar, Award } from "lucide-react";
 
 interface GoalTrackerProps {
-  activities: any[];
+  activities: StravaActivity[];
   measurementPref: 'metric' | 'imperial';
 }
 
@@ -21,7 +23,7 @@ export function GoalTracker({ activities, measurementPref }: GoalTrackerProps) {
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadGoals = () => {
+  const loadGoals = useCallback(() => {
     try {
       const savedGoals = getGoals();
       setGoals(savedGoals);
@@ -29,7 +31,7 @@ export function GoalTracker({ activities, measurementPref }: GoalTrackerProps) {
       // Calculate progress for each goal
       const progressMap: { [goalId: string]: GoalProgress } = {};
       savedGoals.forEach(goal => {
-        progressMap[goal.id] = calculateGoalProgress(goal, activities);
+        progressMap[goal.id] = calculateGoalProgress(goal, activities as unknown as ActivityForGoal[]);
       });
       setGoalProgress(progressMap);
     } catch (error) {
@@ -37,11 +39,11 @@ export function GoalTracker({ activities, measurementPref }: GoalTrackerProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activities]);
 
   useEffect(() => {
     loadGoals();
-  }, [activities]);
+  }, [loadGoals]);
 
   const handleCreateGoal = () => {
     setEditingGoal(null);
@@ -191,8 +193,8 @@ export function GoalTracker({ activities, measurementPref }: GoalTrackerProps) {
             </div>
             <h3 className="text-lg font-semibold mb-2">No Goals Yet</h3>
             <p className="text-muted-foreground mb-6 max-w-md">
-              Set your first fitness goal to start tracking your progress. Whether it's running distance, 
-              workout time, or elevation gain - we'll help you stay motivated!
+              Set your first fitness goal to start tracking your progress. Whether it&apos;s running distance, 
+              workout time, or elevation gain - we&apos;ll help you stay motivated!
             </p>
             <Button 
               onClick={handleCreateGoal}

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card } from '@/components/ui/card';
-import { WeatherData, ActivityWithWeather } from '@/lib/types/weather';
+import { ActivityWithWeather } from '@/lib/types/weather';
 import { 
   Cloud, 
   CloudRain, 
@@ -40,8 +40,7 @@ export function WeatherCard({
   const weather = activity.weather;
   const mainWeather = weather.weather[0];
 
-  const getWeatherIcon = (weatherType: string, iconCode: string) => {
-    const isDay = iconCode.includes('d');
+  const getWeatherIcon = (weatherType: string) => {
     
     switch (weatherType.toLowerCase()) {
       case 'clear':
@@ -142,7 +141,7 @@ export function WeatherCard({
       <Card className="p-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            {getWeatherIcon(mainWeather.main, mainWeather.icon)}
+            {getWeatherIcon(mainWeather.main)}
             <div>
               <p className={`text-lg font-semibold ${getTemperatureColor(weather.main.temp)}`}>
                 {Math.round(weather.main.temp)}°C
@@ -167,7 +166,7 @@ export function WeatherCard({
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            {getWeatherIcon(mainWeather.main, mainWeather.icon)}
+            {getWeatherIcon(mainWeather.main)}
             <div>
               <h3 className="font-semibold text-lg capitalize">{mainWeather.description}</h3>
               <p className="text-sm text-gray-500">{formatDate(activity.start_date)}</p>

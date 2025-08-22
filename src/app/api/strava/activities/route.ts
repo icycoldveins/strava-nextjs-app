@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
+import type { CustomSession } from '@/lib/auth-types';
+import { StravaActivity, FormattedActivity } from '../../../../lib/types/strava';
 
 const STRAVA_API_BASE = 'https://www.strava.com/api/v3';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session || !session.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -33,7 +35,7 @@ export async function GET(request: NextRequest) {
     const activities = await activitiesResponse.json();
 
     // Format activities for frontend
-    const formattedActivities = activities.map((activity: any) => ({
+    const formattedActivities = activities.map((activity: StravaActivity): FormattedActivity => ({
       id: activity.id,
       name: activity.name,
       type: activity.type,

@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
+import type { CustomSession } from '@/lib/auth-types';
+import { StravaAthlete } from '@/lib/types/strava';
 
 const STRAVA_API_BASE = 'https://www.strava.com/api/v3';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session || !session.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -36,7 +38,7 @@ export async function GET(request: NextRequest) {
     const kudos = await kudosResponse.json();
 
     // Format kudos data with sender information
-    const formattedKudos = kudos.map((kudo: any) => ({
+    const formattedKudos = kudos.map((kudo: StravaAthlete) => ({
       firstname: kudo.firstname,
       lastname: kudo.lastname,
       profile_medium: kudo.profile_medium,

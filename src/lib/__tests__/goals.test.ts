@@ -7,7 +7,7 @@ import {
   calculateGoalProgress,
   getGoalDateRange 
 } from '../goals';
-import { Goal, GoalProgress } from '../types/goals';
+import { Goal } from '../types/goals';
 
 // Mock localStorage
 const localStorageMock = {
@@ -16,7 +16,7 @@ const localStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
 };
-global.localStorage = localStorageMock as any;
+global.localStorage = localStorageMock as Storage;
 
 describe('Goal Management', () => {
   beforeEach(() => {

@@ -17,10 +17,7 @@ import { ActivityWithWeather, WeatherData, WeatherAnalysis } from '@/lib/types/w
 import { 
   CloudRain, 
   Sun, 
-  Wind, 
-  TrendingUp, 
-  TrendingDown, 
-  BarChart3,
+  Wind,
   RefreshCw,
   AlertCircle,
   Lightbulb,
@@ -69,8 +66,8 @@ export function WeatherImpact({ className = '' }: WeatherImpactProps) {
 
       // Extract location data for weather requests
       const activitiesWithLocation = stravaActivities
-        .filter((activity: any) => activity.map?.summary_polyline)
-        .map((activity: any) => {
+        .filter((activity: { map?: { summary_polyline?: string } }) => activity.map?.summary_polyline)
+        .map((activity: { id: number; start_date: string; map?: { summary_polyline?: string } }) => {
           // For demo purposes, use approximate coordinates
           // In a real app, you'd decode the polyline to get start coordinates
           const lat = 37.7749 + (Math.random() - 0.5) * 0.1; // San Francisco area
@@ -318,7 +315,7 @@ export function WeatherImpact({ className = '' }: WeatherImpactProps) {
 
         <div className="flex items-center space-x-2">
           <label className="text-sm font-medium">Chart Type:</label>
-          <Select value={selectedChartType} onValueChange={(value: any) => setSelectedChartType(value)}>
+          <Select value={selectedChartType} onValueChange={(value: 'scatter' | 'line' | 'bar' | 'heatmap') => setSelectedChartType(value)}>
             <SelectTrigger className="w-40">
               <SelectValue />
             </SelectTrigger>
@@ -334,7 +331,7 @@ export function WeatherImpact({ className = '' }: WeatherImpactProps) {
         {selectedChartType === 'scatter' && (
           <div className="flex items-center space-x-2">
             <label className="text-sm font-medium">Metric:</label>
-            <Select value={selectedMetric} onValueChange={(value: any) => setSelectedMetric(value)}>
+            <Select value={selectedMetric} onValueChange={(value: 'temperature' | 'humidity' | 'wind' | 'pressure') => setSelectedMetric(value)}>
               <SelectTrigger className="w-32">
                 <SelectValue />
               </SelectTrigger>

@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { HeadToHeadComparison } from '@/lib/types/friends';
-import { COMPARISON_METRICS, getTimePeriodLabel, getActivityTypeLabel } from '@/lib/friendComparison';
+import { COMPARISON_METRICS, getTimePeriodLabel } from '@/lib/friendComparison';
 
 interface HeadToHeadCardProps {
   comparison: HeadToHeadComparison;

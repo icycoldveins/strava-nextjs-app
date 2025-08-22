@@ -25,7 +25,7 @@ export interface HeatmapDataPoint {
 }
 
 export interface HeatmapValue {
-  date: Date;
+  date: string; // Changed to string for react-calendar-heatmap compatibility
   count: number;
 }
 

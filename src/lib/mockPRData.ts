@@ -1,4 +1,4 @@
-import { PRAnalysis, PersonalRecord, STANDARD_DISTANCES } from './types/personalRecords';
+import { PRAnalysis, STANDARD_DISTANCES } from './types/personalRecords';
 
 // Mock data for testing the PR Dashboard
 export const mockPRAnalysis: PRAnalysis = {

@@ -28,7 +28,21 @@ export interface BadgeDefinition {
   icon: string;
   category: BadgeCategory;
   rarity: BadgeRarity;
-  checkFunction: (activities: any[], badge?: Badge) => AchievementCheckResult;
+  checkFunction: (activities: ActivityForBadgeCheck[], badge?: Badge) => AchievementCheckResult;
+}
+
+export interface ActivityForBadgeCheck {
+  id: number;
+  type: string;
+  sport_type?: string;
+  distance?: number;
+  moving_time?: number;
+  start_date: string;
+  total_elevation_gain?: number;
+  average_speed?: number;
+  max_speed?: number;
+  calories?: number;
+  [key: string]: unknown;
 }
 
 export interface AchievementCheckResult {

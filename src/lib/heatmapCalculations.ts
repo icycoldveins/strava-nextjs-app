@@ -244,7 +244,7 @@ export function calculateHeatmapStats(
  */
 export function convertToHeatmapValues(dataPoints: HeatmapDataPoint[]): HeatmapValue[] {
   return dataPoints.map(point => ({
-    date: new Date(point.date),
+    date: point.date, // Keep as string for react-calendar-heatmap
     count: point.value,
   }));
 }

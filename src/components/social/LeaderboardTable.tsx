@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { 
   LeaderboardEntry, 
   TimePeriod, 
-  ActivityType, 
-  ComparisonMetric 
+  ActivityType 
 } from '@/lib/types/friends';
 import { 
   COMPARISON_METRICS, 
@@ -72,9 +71,6 @@ export function LeaderboardTable({
     }
   };
 
-  const getMetricConfig = (key: keyof LeaderboardEntry['stats']): ComparisonMetric => {
-    return COMPARISON_METRICS.find(m => m.key === key) || COMPARISON_METRICS[0];
-  };
 
   return (
     <div className={className}>

@@ -6,11 +6,11 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Plus } from 'lucide-react';
-import { GearType, DEFAULT_GEAR_THRESHOLDS } from '@/lib/types/gear';
+import { GearType, DEFAULT_GEAR_THRESHOLDS, Gear } from '@/lib/types/gear';
 import { createGear } from '@/lib/gear';
 
 interface AddGearModalProps {
-  onGearAdded: (gear: any) => void;
+  onGearAdded: (gear: Gear) => void;
   trigger?: React.ReactNode;
 }
 

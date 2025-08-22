@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { WeatherService } from '@/lib/weatherService';
 import { WeatherData } from '@/lib/types/weather';
 
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Health check endpoint
-export async function HEAD(request: NextRequest) {
+export async function HEAD() {
   try {
     const session = await getServerSession(authOptions);
     
@@ -151,7 +151,7 @@ export async function HEAD(request: NextRequest) {
     }
 
     return new NextResponse(null, { status: 200 });
-  } catch (error) {
+  } catch {
     return new NextResponse(null, { status: 500 });
   }
 }

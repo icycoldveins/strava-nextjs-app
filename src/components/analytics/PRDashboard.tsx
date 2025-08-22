@@ -4,21 +4,18 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PRCard } from './PRCard';
-import { PotentialPR, PersonalRecord } from '@/lib/types/personalRecords';
 import { formatTime, getPRDisplayValue } from '@/lib/prCalculations';
 import { usePersonalRecords } from '@/hooks/usePersonalRecords';
 import { 
   Trophy, 
   TrendingUp, 
-  Target, 
   Download, 
   RefreshCw,
   Calendar,
   Medal,
-  Clock,
-  Zap,
   Activity,
-  Filter
+  Target,
+  Zap
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, PieChart, Pie, Cell } from 'recharts';
 
@@ -39,8 +36,7 @@ export function PRDashboard({ className }: PRDashboardProps) {
     loading,
     error,
     refreshPRData,
-    hasData,
-    isStale
+    hasData
   } = usePersonalRecords();
 
   const exportPRData = () => {

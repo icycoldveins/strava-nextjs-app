@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
+import type { CustomSession } from '@/lib/auth-types';
+import { StravaAthlete } from '@/lib/types/strava';
 
 const STRAVA_API_BASE = 'https://www.strava.com/api/v3';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session || !session.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -56,7 +58,7 @@ export async function GET(request: NextRequest) {
     const friends = await friendsResponse.json();
 
     // Format friends data for frontend
-    const formattedFriends = friends.map((friend: any) => ({
+    const formattedFriends = friends.map((friend: StravaAthlete) => ({
       id: friend.id,
       username: friend.username || `${friend.firstname}_${friend.lastname}`.toLowerCase(),
       firstname: friend.firstname,
@@ -93,7 +95,7 @@ export async function GET(request: NextRequest) {
         mock: true,
         error: 'Using mock data due to API error',
       });
-    } catch (mockError) {
+    } catch {
       return NextResponse.json(
         { error: 'Failed to fetch friends data' },
         { status: 500 }

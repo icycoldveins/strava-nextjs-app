@@ -9,8 +9,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  LineChart,
-  Line,
   BarChart,
   Bar,
   Legend,
@@ -122,7 +120,19 @@ export function WeatherCorrelationChart({
     return '#dc2626'; // Very strong - red
   };
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  interface TooltipData {
+    x: number;
+    y: number;
+    pace: number;
+    speed: number;
+    activityType: string;
+    name: string;
+    date: string;
+    weather: string;
+    xLabel: string;
+  }
+
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: TooltipData }>; label?: string | number }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

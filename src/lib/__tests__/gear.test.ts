@@ -19,9 +19,6 @@ import {
   GearType,
   GearStatus,
   MaintenanceAlertLevel,
-  MaintenanceAlert,
-  GearStats,
-  MaintenanceRecord,
   DEFAULT_GEAR_THRESHOLDS
 } from '../types/gear';
 
@@ -32,7 +29,7 @@ const localStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
 };
-global.localStorage = localStorageMock as any;
+global.localStorage = localStorageMock as Storage;
 
 describe('Gear Management - CRUD Operations', () => {
   beforeEach(() => {

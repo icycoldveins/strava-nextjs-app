@@ -5,14 +5,13 @@ import {
   Badge, 
   UnlockedBadge, 
   BadgeCategory, 
-  BadgeRarity 
+  BadgeRarity,
+  ActivityForBadgeCheck
 } from '@/lib/types/achievements';
+import { StravaActivity } from '@/lib/types/strava';
 import { 
   checkAchievements, 
-  getAllBadges, 
-  getUnlockedBadges,
-  getBadgeProgress,
-  loadAchievementState 
+  getAllBadges
 } from '@/lib/achievements';
 
 export interface UseAchievementsReturn {
@@ -34,27 +33,27 @@ export interface UseAchievementsReturn {
   };
   
   // Actions
-  checkForNewAchievements: (activities: any[]) => Promise<UnlockedBadge[]>;
+  checkForNewAchievements: (activities: StravaActivity[]) => Promise<UnlockedBadge[]>;
   dismissRecentUnlocks: () => void;
-  refreshBadges: (activities?: any[]) => void;
+  refreshBadges: (activities?: StravaActivity[]) => void;
   
   // Loading states
   isLoading: boolean;
   isCheckingAchievements: boolean;
 }
 
-export function useAchievements(activities: any[] = []): UseAchievementsReturn {
+export function useAchievements(activities: StravaActivity[] = []): UseAchievementsReturn {
   const [badges, setBadges] = useState<Badge[]>([]);
   const [recentlyUnlocked, setRecentlyUnlocked] = useState<UnlockedBadge[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCheckingAchievements, setIsCheckingAchievements] = useState(false);
 
   // Initialize badges on mount and when activities change
-  const refreshBadges = useCallback((updatedActivities?: any[]) => {
+  const refreshBadges = useCallback((updatedActivities?: StravaActivity[]) => {
     setIsLoading(true);
     try {
       const activitiesToUse = updatedActivities || activities;
-      const allBadges = getAllBadges(activitiesToUse);
+      const allBadges = getAllBadges(activitiesToUse as unknown as ActivityForBadgeCheck[]);
       setBadges(allBadges);
     } catch (error) {
       console.error('Error refreshing badges:', error);
@@ -64,12 +63,12 @@ export function useAchievements(activities: any[] = []): UseAchievementsReturn {
   }, [activities]);
 
   // Check for new achievements
-  const checkForNewAchievements = useCallback(async (activitiesToCheck: any[]): Promise<UnlockedBadge[]> => {
+  const checkForNewAchievements = useCallback(async (activitiesToCheck: StravaActivity[]): Promise<UnlockedBadge[]> => {
     if (activitiesToCheck.length === 0) return [];
     
     setIsCheckingAchievements(true);
     try {
-      const result = await Promise.resolve(checkAchievements(activitiesToCheck));
+      const result = await Promise.resolve(checkAchievements(activitiesToCheck as unknown as ActivityForBadgeCheck[]));
       
       if (result.newlyUnlocked.length > 0) {
         setRecentlyUnlocked(result.newlyUnlocked);

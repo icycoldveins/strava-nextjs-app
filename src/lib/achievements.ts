@@ -3,7 +3,8 @@ import {
   Badge, 
   AchievementState, 
   UnlockedBadge, 
-  AchievementCheckResult 
+  AchievementCheckResult,
+  ActivityForBadgeCheck
 } from './types/achievements';
 
 const STORAGE_KEY = 'strava_achievements';
@@ -20,7 +21,7 @@ export function isActivityInTimeRange(timeString: string, startHour: number, end
 }
 
 // Calculate activity streaks
-export function calculateActivityStreaks(activities: any[]): {
+export function calculateActivityStreaks(activities: ActivityForBadgeCheck[]): {
   currentStreak: number;
   longestStreak: number;
 } {
@@ -30,7 +31,7 @@ export function calculateActivityStreaks(activities: any[]): {
   const sortedActivities = activities
     .map(a => ({
       ...a,
-      date: new Date(a.start_date_local || a.start_date).toDateString()
+      date: new Date((a.start_date_local || a.start_date) as string).toDateString()
     }))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
@@ -57,7 +58,7 @@ export function calculateActivityStreaks(activities: any[]): {
 }
 
 // Calculate activity statistics
-export function getActivityStats(activities: any[]) {
+export function getActivityStats(activities: ActivityForBadgeCheck[]) {
   if (activities.length === 0) {
     return {
       totalDistance: 0,
@@ -96,8 +97,8 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🏃‍♀️',
       category: 'distance',
       rarity: 'common',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
-        const runs = activities.filter(a => a.type === 'Run' && a.distance >= 5000);
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
+        const runs = activities.filter(a => a.type === 'Run' && (a.distance || 0) >= 5000);
         const isUnlocked = runs.length > 0;
         const longestRun = Math.max(...activities.filter(a => a.type === 'Run').map(a => a.distance || 0), 0);
         const progress = Math.min(100, (longestRun / 5000) * 100);
@@ -117,7 +118,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🏃‍♂️',
       category: 'distance',
       rarity: 'common',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const runs = activities.filter(a => a.type === 'Run' && a.distance >= 10000);
         const isUnlocked = runs.length > 0;
         const longestRun = Math.max(...activities.filter(a => a.type === 'Run').map(a => a.distance || 0), 0);
@@ -138,7 +139,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🏅',
       category: 'distance',
       rarity: 'rare',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const runs = activities.filter(a => a.type === 'Run' && a.distance >= 21097);
         const isUnlocked = runs.length > 0;
         const longestRun = Math.max(...activities.filter(a => a.type === 'Run').map(a => a.distance || 0), 0);
@@ -159,7 +160,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🏆',
       category: 'distance',
       rarity: 'epic',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const runs = activities.filter(a => a.type === 'Run' && a.distance >= 42195);
         const isUnlocked = runs.length > 0;
         const longestRun = Math.max(...activities.filter(a => a.type === 'Run').map(a => a.distance || 0), 0);
@@ -180,7 +181,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🚴‍♂️',
       category: 'distance',
       rarity: 'rare',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const rides = activities.filter(a => a.type === 'Ride' && a.distance >= 100000);
         const isUnlocked = rides.length > 0;
         const longestRide = Math.max(...activities.filter(a => a.type === 'Ride').map(a => a.distance || 0), 0);
@@ -201,7 +202,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🦸‍♀️',
       category: 'distance',
       rarity: 'legendary',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const runs = activities.filter(a => a.type === 'Run' && a.distance >= 50000);
         const isUnlocked = runs.length > 0;
         const longestRun = Math.max(...activities.filter(a => a.type === 'Run').map(a => a.distance || 0), 0);
@@ -224,7 +225,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '📅',
       category: 'consistency',
       rarity: 'common',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const streaks = calculateActivityStreaks(activities);
         const isUnlocked = streaks.longestStreak >= 7;
         const progress = Math.min(100, (streaks.longestStreak / 7) * 100);
@@ -244,7 +245,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🔥',
       category: 'consistency',
       rarity: 'rare',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const streaks = calculateActivityStreaks(activities);
         const isUnlocked = streaks.longestStreak >= 30;
         const progress = Math.min(100, (streaks.longestStreak / 30) * 100);
@@ -264,7 +265,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '💯',
       category: 'consistency',
       rarity: 'epic',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const streaks = calculateActivityStreaks(activities);
         const isUnlocked = streaks.longestStreak >= 100;
         const progress = Math.min(100, (streaks.longestStreak / 100) * 100);
@@ -284,7 +285,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🌟',
       category: 'consistency',
       rarity: 'legendary',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const streaks = calculateActivityStreaks(activities);
         const isUnlocked = streaks.longestStreak >= 365;
         const progress = Math.min(100, (streaks.longestStreak / 365) * 100);
@@ -306,7 +307,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🌅',
       category: 'time',
       rarity: 'common',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const earlyActivities = activities.filter(a => {
           const timeString = (a.start_date_local || a.start_date).split('T')[1];
           return isActivityInTimeRange(timeString, 0, 5); // Before 6 AM (0-5:59)
@@ -329,7 +330,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🦉',
       category: 'time',
       rarity: 'common',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const nightActivities = activities.filter(a => {
           const timeString = (a.start_date_local || a.start_date).split('T')[1];
           return isActivityInTimeRange(timeString, 21, 23); // After 9 PM
@@ -352,7 +353,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🎯',
       category: 'time',
       rarity: 'rare',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const weekendActivities = activities.filter(a => {
           const date = new Date(a.start_date_local || a.start_date);
           const day = date.getDay();
@@ -378,7 +379,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🐐',
       category: 'elevation',
       rarity: 'rare',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const highActivities = activities.filter(a => (a.total_elevation_gain || 0) >= 1000);
         const isUnlocked = highActivities.length > 0;
         const maxElevation = Math.max(...activities.map(a => a.total_elevation_gain || 0), 0);
@@ -399,7 +400,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🏔️',
       category: 'elevation',
       rarity: 'epic',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const totalElevation = activities.reduce((sum, a) => sum + (a.total_elevation_gain || 0), 0);
         const isUnlocked = totalElevation >= 8848;
         const progress = Math.min(100, (totalElevation / 8848) * 100);
@@ -419,7 +420,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '👑',
       category: 'elevation',
       rarity: 'rare',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         // Group activities by month
         const monthlyElevation = new Map<string, number>();
         
@@ -451,7 +452,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '💨',
       category: 'speed',
       rarity: 'epic',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const targetSpeed = 50 / 3.6; // Convert km/h to m/s
         const fastRides = activities.filter(a => 
           a.type === 'Ride' && (a.average_speed || 0) >= targetSpeed
@@ -475,7 +476,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🚀',
       category: 'speed',
       rarity: 'rare',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const targetSpeed = 20 / 3.6; // Convert km/h to m/s
         const fastRuns = activities.filter(a => 
           a.type === 'Run' && (a.average_speed || 0) >= targetSpeed
@@ -501,7 +502,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🎊',
       category: 'special',
       rarity: 'common',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const newYearActivities = activities.filter(a => {
           const date = new Date(a.start_date_local || a.start_date);
           return date.getMonth() === 0 && date.getDate() === 1; // January 1st
@@ -523,7 +524,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '💝',
       category: 'special',
       rarity: 'common',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const valentineActivities = activities.filter(a => {
           const date = new Date(a.start_date_local || a.start_date);
           return date.getMonth() === 1 && date.getDate() === 14; // February 14th
@@ -545,7 +546,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       icon: '🎄',
       category: 'special',
       rarity: 'rare',
-      checkFunction: (activities: any[]): AchievementCheckResult => {
+      checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const christmasActivities = activities.filter(a => {
           const date = new Date(a.start_date_local || a.start_date);
           return date.getMonth() === 11 && date.getDate() === 25; // December 25th
@@ -592,7 +593,7 @@ export function saveAchievementState(state: AchievementState): void {
 }
 
 // Main achievement checking function
-export function checkAchievements(activities: any[]): {
+export function checkAchievements(activities: ActivityForBadgeCheck[]): {
   newlyUnlocked: UnlockedBadge[];
   updatedProgress: Record<string, number>;
 } {
@@ -635,7 +636,7 @@ export function checkAchievements(activities: any[]): {
 }
 
 // Helper function to find the activity that triggered an achievement
-function findTriggeringActivity(badgeDefinition: BadgeDefinition, activities: any[]): any | null {
+function findTriggeringActivity(badgeDefinition: BadgeDefinition, activities: ActivityForBadgeCheck[]): ActivityForBadgeCheck | null {
   // This is a simplified approach - in practice, you might want more sophisticated logic
   // to identify the exact activity that unlocked each badge
   
@@ -698,7 +699,7 @@ export function getBadgeProgress(): Record<string, number> {
   return state.badgeProgress;
 }
 
-export function getAllBadges(activities: any[] = []): Badge[] {
+export function getAllBadges(activities: ActivityForBadgeCheck[] = []): Badge[] {
   const state = loadAchievementState();
   const badges = getBadgeDefinitions();
   const unlockedBadgeIds = new Set(state.unlockedBadges.map(b => b.badgeId));

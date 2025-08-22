@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
+import type { CustomSession } from '@/lib/auth-types';
+import { StravaActivity } from '@/lib/types/strava';
 
 const STRAVA_API_BASE = 'https://www.strava.com/api/v3';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session || !session.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -69,7 +71,7 @@ export async function GET(request: NextRequest) {
     const activities = await activitiesResponse.json();
 
     // Format activities for frontend
-    const formattedActivities = activities.map((activity: any) => ({
+    const formattedActivities = activities.map((activity: StravaActivity) => ({
       id: activity.id,
       name: activity.name,
       type: activity.type,
@@ -90,9 +92,9 @@ export async function GET(request: NextRequest) {
       achievement_count: activity.achievement_count,
       kudos_count: activity.kudos_count,
       athlete: {
-        id: activity.athlete?.id || parseInt(friendId),
-        firstname: activity.athlete?.firstname || 'Friend',
-        lastname: activity.athlete?.lastname || 'Athlete',
+        id: parseInt(friendId),
+        firstname: 'Friend',
+        lastname: 'Athlete',
       },
     }));
 
@@ -118,7 +120,7 @@ export async function GET(request: NextRequest) {
         mock: true,
         error: 'Using mock data due to API error',
       });
-    } catch (mockError) {
+    } catch {
       return NextResponse.json(
         { error: 'Failed to fetch friend activities' },
         { status: 500 }

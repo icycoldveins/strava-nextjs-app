@@ -245,7 +245,7 @@ export function FriendActivityFeed({
                           {activity.kudos_count}
                         </span>
                       )}
-                      {activity.comment_count > 0 && (
+                      {activity.comment_count && activity.comment_count > 0 && (
                         <span className="flex items-center gap-1">
                           <span>💬</span>
                           {activity.comment_count}

@@ -214,7 +214,7 @@ export function calculatePersonalRecords(activities: Activity[]): PRAnalysis {
   );
   
   // Generate potential PRs based on current fitness
-  const potentialPRs = generatePotentialPRs(personalRecords, activities);
+  const potentialPRs = generatePotentialPRs(personalRecords);
   
   // Calculate summary statistics
   const summary = calculatePRSummary(personalRecords, recentImprovements);
@@ -230,7 +230,7 @@ export function calculatePersonalRecords(activities: Activity[]): PRAnalysis {
 /**
  * Generate potential PRs based on current performance
  */
-function generatePotentialPRs(personalRecords: PersonalRecord[], activities: Activity[]): PotentialPR[] {
+function generatePotentialPRs(personalRecords: PersonalRecord[]): PotentialPR[] {
   const potentialPRs: PotentialPR[] = [];
   
   // Find distances not yet achieved
@@ -288,7 +288,6 @@ function generatePotentialPRs(personalRecords: PersonalRecord[], activities: Act
  * Calculate summary statistics
  */
 function calculatePRSummary(personalRecords: PersonalRecord[], recentImprovements: PersonalRecord[]): PRSummary {
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
   
   const improvingDistances: StandardDistance[] = [];

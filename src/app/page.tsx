@@ -17,6 +17,7 @@ import { useAchievements, useBadgesWithProgress, useAchievementStats } from "@/h
 import { TrainingHeatmap } from "@/components/analytics/TrainingHeatmap";
 import { PRDashboard } from "@/components/analytics/PRDashboard";
 import { WeatherImpact } from "@/components/analytics/WeatherImpact";
+import type { StravaActivity as ImportedStravaActivity } from "@/lib/types/strava";
 
 interface Stats {
   allTime: {
@@ -63,7 +64,11 @@ export default function Home() {
   const { data: session, status } = useSession();
   const [stats, setStats] = useState<Stats | null>(null);
   const [activities, setActivities] = useState<StravaActivity[]>([]);
-  const [athlete, setAthlete] = useState<any>(null);
+  const [athlete, setAthlete] = useState<{
+    premium?: boolean;
+    measurement_preference?: 'feet' | 'meters';
+    [key: string]: unknown;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [kudosData, setKudosData] = useState<{ [activityId: number]: KudoGiver[] }>({});
@@ -71,7 +76,7 @@ export default function Home() {
 
   // Check for refresh token error and force re-authentication
   useEffect(() => {
-    // @ts-ignore - Check for refresh error
+    // @ts-expect-error - Check for refresh error
     if (session?.error === "RefreshAccessTokenError") {
       signIn("strava"); // Force re-authentication
     }
@@ -80,13 +85,11 @@ export default function Home() {
   // Achievement system integration
   const {
     badges,
-    unlockedBadges,
     recentlyUnlocked,
     stats: achievementStats,
-    checkForNewAchievements,
     dismissRecentUnlocks,
     isLoading: achievementsLoading,
-  } = useAchievements(activities);
+  } = useAchievements(activities as unknown as ImportedStravaActivity[]);
 
   const badgesWithProgress = useBadgesWithProgress(badges);
   const achievementTimeStats = useAchievementStats(badges);
@@ -340,13 +343,13 @@ export default function Home() {
 
           {/* Goal Tracker */}
           <GoalTracker 
-            activities={activities} 
+            activities={activities as unknown as ImportedStravaActivity[]} 
             measurementPref={measurementPref}
           />
 
           {/* Gear Tracker */}
           <div className="mb-8">
-            <GearTracker activities={activities} />
+            <GearTracker activities={activities as unknown as ImportedStravaActivity[]} />
           </div>
 
           {/* Achievement Progress - Only show if there are badges with progress */}
@@ -392,7 +395,7 @@ export default function Home() {
                   </p>
                   {achievementTimeStats.recentUnlocks.length > 0 && (
                     <div className="flex -space-x-1 mt-2">
-                      {achievementTimeStats.recentUnlocks.slice(0, 3).map((badge, i) => (
+                      {achievementTimeStats.recentUnlocks.slice(0, 3).map((badge) => (
                         <div 
                           key={badge.id}
                           className="text-lg bg-white dark:bg-gray-700 rounded-full p-1 border-2 border-blue-200 dark:border-blue-700"

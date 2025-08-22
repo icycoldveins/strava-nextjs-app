@@ -201,7 +201,7 @@ export function BadgeGallery({ badges, className }: BadgeGalleryProps) {
             <select
               className="px-3 py-1 border rounded text-sm"
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
+              onChange={(e) => setSortBy(e.target.value as 'name' | 'rarity' | 'progress' | 'unlocked')}
             >
               <option value="rarity">Rarity</option>
               <option value="name">Name</option>

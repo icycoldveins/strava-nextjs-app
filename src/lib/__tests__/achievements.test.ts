@@ -10,7 +10,7 @@ import {
   isActivityInTimeRange,
   getActivityStats,
 } from '../achievements';
-import { BadgeDefinition, Badge, AchievementState, BadgeCategory, BadgeRarity } from '../types/achievements';
+import { AchievementState, BadgeCategory, BadgeRarity } from '../types/achievements';
 
 // Mock localStorage
 const localStorageMock = {

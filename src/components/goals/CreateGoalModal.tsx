@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Goal, GoalType, GoalPeriod } from "@/lib/types/goals";
-import { createGoal, updateGoal, formatGoalValue } from "@/lib/goals";
+import { createGoal, updateGoal } from "@/lib/goals";
 import {
   Dialog,
   DialogContent,
@@ -37,7 +37,7 @@ const ACTIVITY_TYPES = [
   'Kayaking', 'Canoeing', 'Rowing', 'StandUpPaddling', 'Surfing'
 ];
 
-const GOAL_TYPES: { value: GoalType; label: string; icon: JSX.Element; description: string }[] = [
+const GOAL_TYPES: { value: GoalType; label: string; icon: React.ReactElement; description: string }[] = [
   {
     value: 'distance',
     label: 'Distance',

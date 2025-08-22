@@ -36,6 +36,7 @@ export interface FriendActivity {
   calories?: number;
   achievement_count: number;
   kudos_count: number;
+  comment_count?: number;
   athlete: {
     id: number;
     firstname: string;

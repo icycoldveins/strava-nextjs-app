@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
+import type { CustomSession } from '@/lib/auth-types';
 import { 
   groupActivitiesByDate, 
   calculateHeatmapStats, 
@@ -13,6 +14,7 @@ import {
   HeatmapMetricType, 
   HeatmapResponse 
 } from '@/lib/types/heatmap';
+import { StravaActivity } from '@/lib/types/strava';
 
 const STRAVA_API_BASE = 'https://www.strava.com/api/v3';
 
@@ -56,7 +58,7 @@ async function fetchAllActivities(
       }
       
       // Map to our HeatmapActivity interface
-      const mappedActivities: HeatmapActivity[] = pageActivities.map((activity: any) => ({
+      const mappedActivities: HeatmapActivity[] = pageActivities.map((activity: StravaActivity) => ({
         id: activity.id,
         name: activity.name,
         type: activity.type,
@@ -100,7 +102,7 @@ async function fetchAllActivities(
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session || !session.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
