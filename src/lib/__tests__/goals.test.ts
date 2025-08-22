@@ -141,33 +141,40 @@ describe('Goal Management', () => {
     it('should calculate weekly date range', () => {
       const { startDate, endDate } = getGoalDateRange('weekly');
       
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      const diff = (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
+      const start = new Date(startDate + 'T00:00:00');
+      const end = new Date(endDate + 'T23:59:59');
+      const diff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
       
-      expect(diff).toBe(6); // 7 days total (0-6)
+      expect(diff).toBe(7); // 7 days total
     });
 
     it('should calculate monthly date range', () => {
       const { startDate, endDate } = getGoalDateRange('monthly');
       
-      const start = new Date(startDate);
-      const end = new Date(endDate);
+      // Parse dates properly considering they are YYYY-MM-DD format
+      const [startYear, startMonth, startDay] = startDate.split('-').map(Number);
+      const [endYear, endMonth, endDay] = endDate.split('-').map(Number);
       
-      expect(start.getDate()).toBe(1); // First day of month
-      expect(end.getMonth()).toBe(start.getMonth()); // Same month
+      expect(startDay).toBe(1); // First day of month
+      expect(startMonth).toBe(endMonth); // Same month
+      expect(startYear).toBe(endYear); // Same year
+      // End day should be last day of month (28-31)
+      expect(endDay).toBeGreaterThanOrEqual(28);
+      expect(endDay).toBeLessThanOrEqual(31);
     });
 
     it('should calculate yearly date range', () => {
       const { startDate, endDate } = getGoalDateRange('yearly');
       
-      const start = new Date(startDate);
-      const end = new Date(endDate);
+      // Parse dates properly considering they are YYYY-MM-DD format
+      const [startYear, startMonth, startDay] = startDate.split('-').map(Number);
+      const [endYear, endMonth, endDay] = endDate.split('-').map(Number);
       
-      expect(start.getMonth()).toBe(0); // January
-      expect(start.getDate()).toBe(1); // First day
-      expect(end.getMonth()).toBe(11); // December
-      expect(end.getDate()).toBe(31); // Last day
+      expect(startMonth).toBe(1); // January (1-based in string format)
+      expect(startDay).toBe(1); // First day
+      expect(endMonth).toBe(12); // December (1-based in string format)
+      expect(endDay).toBe(31); // Last day
+      expect(startYear).toBe(endYear); // Same year
     });
 
     it('should handle custom date range', () => {
