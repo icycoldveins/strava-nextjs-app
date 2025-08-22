@@ -1,5 +1,6 @@
 import Providers from "./providers";
 import { ReactNode } from "react";
+import "./globals.css";
 
 export const metadata = {
   title: "Strava NextJS App",
@@ -12,8 +13,8 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Providers>
           {children}
         </Providers>
