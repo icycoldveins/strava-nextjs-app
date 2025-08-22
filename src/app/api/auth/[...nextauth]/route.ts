@@ -36,14 +36,45 @@ export const authOptions: NextAuthOptions = {
         return token;
       }
       
-      // Access token has expired, return previous token for now
-      // In production, you'd want to refresh the token here
-      return token;
+      // Access token has expired, try to refresh it
+      try {
+        const response = await fetch('https://www.strava.com/api/v3/oauth/token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            client_id: process.env.STRAVA_CLIENT_ID as string,
+            client_secret: process.env.STRAVA_CLIENT_SECRET as string,
+            grant_type: 'refresh_token',
+            refresh_token: token.refreshToken as string,
+          }),
+        });
+
+        const refreshedTokens = await response.json();
+
+        if (!response.ok) {
+          throw refreshedTokens;
+        }
+
+        return {
+          ...token,
+          accessToken: refreshedTokens.access_token,
+          refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Use new refresh token if provided
+          expiresAt: refreshedTokens.expires_at,
+        };
+      } catch (error) {
+        console.error('Error refreshing access token', error);
+        // Return the old token if refresh fails (user will need to re-authenticate)
+        return { ...token, error: "RefreshAccessTokenError" };
+      }
     },
     async session({ session, token }) {
       // Send properties to the client
       session.accessToken = token.accessToken as string;
       session.user = token.user as any;
+      // @ts-ignore - Add error to session if refresh failed
+      session.error = token.error;
       return session;
     },
     async redirect({ url, baseUrl }) {

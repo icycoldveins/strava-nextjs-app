@@ -69,6 +69,14 @@ export default function Home() {
   const [kudosData, setKudosData] = useState<{ [activityId: number]: KudoGiver[] }>({});
   const [loadingKudos, setLoadingKudos] = useState<{ [activityId: number]: boolean }>({});
 
+  // Check for refresh token error and force re-authentication
+  useEffect(() => {
+    // @ts-ignore - Check for refresh error
+    if (session?.error === "RefreshAccessTokenError") {
+      signIn("strava"); // Force re-authentication
+    }
+  }, [session]);
+
   // Achievement system integration
   const {
     badges,
