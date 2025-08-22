@@ -14,6 +14,7 @@ import { BadgeGallery } from "@/components/achievements/BadgeGallery";
 import { AchievementProgress } from "@/components/achievements/AchievementProgress";
 import { BadgeUnlockToast } from "@/components/achievements/BadgeUnlockToast";
 import { useAchievements, useBadgesWithProgress, useAchievementStats } from "@/hooks/useAchievements";
+import { TrainingHeatmap } from "@/components/analytics/TrainingHeatmap";
 
 interface Stats {
   allTime: {
@@ -421,6 +422,12 @@ export default function Home() {
               <BadgeGallery badges={badges} />
             </div>
           )}
+
+          {/* Training Heatmap */}
+          <TrainingHeatmap 
+            className="mb-8"
+            measurementPref={measurementPref}
+          />
 
           {/* Recent Activities */}
           <Card className="border-0 shadow-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur">
