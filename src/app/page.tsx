@@ -16,6 +16,7 @@ import { BadgeUnlockToast } from "@/components/achievements/BadgeUnlockToast";
 import { useAchievements, useBadgesWithProgress, useAchievementStats } from "@/hooks/useAchievements";
 import { TrainingHeatmap } from "@/components/analytics/TrainingHeatmap";
 import { PRDashboard } from "@/components/analytics/PRDashboard";
+import { WeatherImpact } from "@/components/analytics/WeatherImpact";
 
 interface Stats {
   allTime: {
@@ -177,6 +178,15 @@ export default function Home() {
               </div>
               
               <div className="flex items-center space-x-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => window.location.href = '/friends'}
+                  className="hover:bg-orange-50 dark:hover:bg-gray-800 text-orange-600 dark:text-orange-400"
+                >
+                  <Users className="h-4 w-4 mr-2" />
+                  Friends
+                </Button>
                 <ThemeToggle />
                 <div className="flex items-center space-x-3">
                   {session.user?.image ? (
@@ -443,6 +453,11 @@ export default function Home() {
               </Button>
             </div>
             <PRDashboard className="" />
+          </div>
+
+          {/* Weather Impact Analysis */}
+          <div className="mb-8">
+            <WeatherImpact />
           </div>
 
           {/* Recent Activities */}
