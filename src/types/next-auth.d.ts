@@ -3,9 +3,9 @@ declare module "next-auth" {
     accessToken?: string;
     error?: string;
     user?: {
-      name?: string;
-      email?: string;
-      image?: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
     };
   }
 }
@@ -15,5 +15,11 @@ declare module "next-auth/jwt" {
     accessToken?: string;
     refreshToken?: string;
     expiresAt?: number;
+    user?: {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+    error?: string;
   }
 }

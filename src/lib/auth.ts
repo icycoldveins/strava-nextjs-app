@@ -1,7 +1,12 @@
 import StravaProvider from "next-auth/providers/strava";
+import type { Session } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 
-// Use any for now to avoid type conflicts with NextAuth
-export const authOptions = {
+// NextAuth configuration with proper types
+// Note: AuthOptions type is not directly exported in next-auth v4
+// Using a type assertion for getServerSession compatibility
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const authOptions: any = {
   providers: [
     StravaProvider({
       clientId: process.env.STRAVA_CLIENT_ID as string,
@@ -19,7 +24,8 @@ export const authOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
-    async jwt({ token, account, user }: { token: any; account: any; user: any }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async jwt({ token, account, user }: { token: JWT; account?: any; user?: any }) {
       // Initial sign in
       if (account && user) {
         return {
@@ -69,15 +75,17 @@ export const authOptions = {
         return { ...token, error: "RefreshAccessTokenError" };
       }
     },
-    async session({ session, token }: { session: any; token: any }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       // Send properties to the client
       session.accessToken = token.accessToken as string;
       session.user = token.user as {
-        name?: string;
-        email?: string;
-        image?: string;
+        name?: string | null;
+        email?: string | null;
+        image?: string | null;
       };
-      (session as any).error = token.error;
+      if (token.error) {
+        session.error = token.error as string;
+      }
       return session;
     },
     async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {

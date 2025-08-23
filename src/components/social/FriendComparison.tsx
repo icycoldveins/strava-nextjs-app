@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -39,16 +39,20 @@ export function FriendComparison({ className }: FriendComparisonProps) {
   const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
   const [activeView, setActiveView] = useState<'leaderboard' | 'head-to-head' | 'feed'>('leaderboard');
 
-  // Fetch friends data
-  useEffect(() => {
-    fetchFriends();
-  }, []);
+  const calculateComparison = useCallback(() => {
+    const friendsWithActivities: FriendWithActivities[] = friends.map(friend => ({
+      friend,
+      activities: friendActivities[friend.id] || [],
+    }));
 
-  // Recalculate comparison when filters change
-  useEffect(() => {
-    if (friends.length > 0 && Object.keys(friendActivities).length > 0) {
-      calculateComparison();
-    }
+    const comparisonData = generateFriendComparison(
+      friendsWithActivities,
+      timePeriod,
+      activityType,
+      selectedFriendId || undefined
+    );
+
+    setComparison(comparisonData);
   }, [friends, friendActivities, timePeriod, activityType, selectedFriendId]);
 
   const fetchFriends = async () => {
@@ -101,21 +105,12 @@ export function FriendComparison({ className }: FriendComparisonProps) {
     }
   };
 
-  const calculateComparison = useCallback(() => {
-    const friendsWithActivities: FriendWithActivities[] = friends.map(friend => ({
-      friend,
-      activities: friendActivities[friend.id] || [],
-    }));
-
-    const comparisonData = generateFriendComparison(
-      friendsWithActivities,
-      timePeriod,
-      activityType,
-      selectedFriendId || undefined
-    );
-
-    setComparison(comparisonData);
-  }, [friends, friendActivities, timePeriod, activityType, selectedFriendId]);
+  // Calculate comparison when data or filters change
+  useEffect(() => {
+    if (friends.length > 0 && Object.keys(friendActivities).length > 0) {
+      calculateComparison();
+    }
+  }, [friends, friendActivities, timePeriod, activityType, selectedFriendId, calculateComparison]);
 
   const handleRefresh = () => {
     fetchFriends();

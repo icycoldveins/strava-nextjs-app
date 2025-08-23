@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
+import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -151,14 +152,12 @@ export function FriendActivityFeed({
             <CardContent className="p-4">
               <div className="flex items-start gap-4">
                 {/* Friend Profile */}
-                <img
-                  src={activity.friendInfo.profile_medium || activity.friendInfo.profile}
+                <Image
+                  src={activity.friendInfo.profile_medium || activity.friendInfo.profile || `https://ui-avatars.com/api/?name=${activity.friendInfo.firstname}+${activity.friendInfo.lastname}&background=random`}
                   alt={`${activity.friendInfo.firstname} ${activity.friendInfo.lastname}`}
-                  className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = `https://ui-avatars.com/api/?name=${activity.friendInfo.firstname}+${activity.friendInfo.lastname}&background=random`;
-                  }}
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover flex-shrink-0"
                 />
 
                 {/* Activity Content */}

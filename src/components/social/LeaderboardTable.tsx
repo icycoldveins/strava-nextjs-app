@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -130,14 +131,12 @@ export function LeaderboardTable({
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <img
-                          src={entry.friend.profile_medium || entry.friend.profile}
+                        <Image
+                          src={entry.friend.profile_medium || entry.friend.profile || `https://ui-avatars.com/api/?name=${entry.friend.firstname}+${entry.friend.lastname}&background=random`}
                           alt={`${entry.friend.firstname} ${entry.friend.lastname}`}
-                          className="w-10 h-10 rounded-full object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = `https://ui-avatars.com/api/?name=${entry.friend.firstname}+${entry.friend.lastname}&background=random`;
-                          }}
+                          width={40}
+                          height={40}
+                          className="rounded-full object-cover"
                         />
                         <div>
                           <div className="font-medium">
@@ -171,14 +170,12 @@ export function LeaderboardTable({
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <img
-                    src={entry.friend.profile_medium || entry.friend.profile}
+                  <Image
+                    src={entry.friend.profile_medium || entry.friend.profile || `https://ui-avatars.com/api/?name=${entry.friend.firstname}+${entry.friend.lastname}&background=random`}
                     alt={`${entry.friend.firstname} ${entry.friend.lastname}`}
-                    className="w-12 h-12 rounded-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = `https://ui-avatars.com/api/?name=${entry.friend.firstname}+${entry.friend.lastname}&background=random`;
-                    }}
+                    width={48}
+                    height={48}
+                    className="rounded-full object-cover"
                   />
                   <div>
                     <div className="font-medium">

@@ -2,6 +2,7 @@
 
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Activity, TrendingUp, Trophy, Clock, LogOut, Loader2, User, MapPin, Calendar, AlertCircle, Users } from "lucide-react";
@@ -201,10 +202,12 @@ export default function Home() {
                 <ThemeToggle />
                 <div className="flex items-center space-x-3">
                   {session.user?.image ? (
-                    <img 
+                    <Image 
                       src={session.user.image} 
                       alt={session.user.name || "Profile"} 
-                      className="w-10 h-10 rounded-full border-2 border-orange-200 dark:border-orange-700"
+                      width={40}
+                      height={40}
+                      className="rounded-full border-2 border-orange-200 dark:border-orange-700"
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center">
@@ -545,10 +548,12 @@ export default function Home() {
                                 {kudosData[activity.id].map((giver, idx) => (
                                   <div key={idx} className="flex items-center gap-1">
                                     {giver.profile_medium && (
-                                      <img 
+                                      <Image 
                                         src={giver.profile_medium} 
                                         alt={`${giver.firstname} ${giver.lastname}`}
-                                        className="w-5 h-5 rounded-full"
+                                        width={20}
+                                        height={20}
+                                        className="rounded-full"
                                       />
                                     )}
                                     <span className="text-xs text-gray-600 dark:text-gray-400">

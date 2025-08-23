@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Image from "next/image";
 import { PRDashboard } from "@/components/analytics/PRDashboard";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Activity } from "lucide-react";
@@ -70,10 +71,12 @@ export default function PersonalRecordsPage() {
             <div className="flex items-center space-x-4">
               <ThemeToggle />
               {session.user?.image && (
-                <img 
+                <Image 
                   src={session.user.image} 
                   alt={session.user.name || "Profile"} 
-                  className="w-8 h-8 rounded-full border-2 border-orange-200 dark:border-orange-700"
+                  width={32}
+                  height={32}
+                  className="rounded-full border-2 border-orange-200 dark:border-orange-700"
                 />
               )}
             </div>

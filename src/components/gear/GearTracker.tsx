@@ -63,18 +63,6 @@ export const GearTracker = ({ activities = [] }: GearTrackerProps) => {
     notes: ''
   });
 
-  // Load gear data on component mount
-  useEffect(() => {
-    loadGearData();
-  }, []);
-
-  // Update distances when activities change
-  useEffect(() => {
-    if (activities.length > 0) {
-      updateAllGearDistances();
-    }
-  }, [activities]);
-
   const loadGearData = useCallback(() => {
     try {
       const allGear = getAllGear();
@@ -111,6 +99,18 @@ export const GearTracker = ({ activities = [] }: GearTrackerProps) => {
       loadGearData();
     }
   }, [activities, loadGearData]);
+
+  // Load gear data on component mount
+  useEffect(() => {
+    loadGearData();
+  }, [loadGearData]);
+
+  // Update distances when activities change
+  useEffect(() => {
+    if (activities.length > 0) {
+      updateAllGearDistances();
+    }
+  }, [activities, updateAllGearDistances]);
 
   const handleSyncWithStrava = async () => {
     setIsSyncing(true);

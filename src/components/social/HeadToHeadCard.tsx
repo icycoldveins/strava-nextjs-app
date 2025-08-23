@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { HeadToHeadComparison } from '@/lib/types/friends';
 import { COMPARISON_METRICS, getTimePeriodLabel } from '@/lib/friendComparison';
@@ -50,14 +51,12 @@ export function HeadToHeadCard({ comparison, className }: HeadToHeadCardProps) {
           <div className="flex items-center justify-center gap-8">
             {/* Friend 1 */}
             <div className={`text-center p-4 rounded-lg border-2 ${getWinnerBg(overallWinner === friend1.id ? friend1.id : 0)}`}>
-              <img
-                src={friend1.profile_medium || friend1.profile}
+              <Image
+                src={friend1.profile_medium || friend1.profile || `https://ui-avatars.com/api/?name=${friend1.firstname}+${friend1.lastname}&background=random`}
                 alt={`${friend1.firstname} ${friend1.lastname}`}
-                className="w-16 h-16 rounded-full object-cover mx-auto mb-2"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = `https://ui-avatars.com/api/?name=${friend1.firstname}+${friend1.lastname}&background=random`;
-                }}
+                width={64}
+                height={64}
+                className="rounded-full object-cover mx-auto mb-2"
               />
               <div className="font-semibold">{friend1.firstname} {friend1.lastname}</div>
               <div className="text-sm text-muted-foreground">@{friend1.username}</div>
@@ -81,14 +80,12 @@ export function HeadToHeadCard({ comparison, className }: HeadToHeadCardProps) {
 
             {/* Friend 2 */}
             <div className={`text-center p-4 rounded-lg border-2 ${getWinnerBg(overallWinner === friend2.id ? friend2.id : 0)}`}>
-              <img
-                src={friend2.profile_medium || friend2.profile}
+              <Image
+                src={friend2.profile_medium || friend2.profile || `https://ui-avatars.com/api/?name=${friend2.firstname}+${friend2.lastname}&background=random`}
                 alt={`${friend2.firstname} ${friend2.lastname}`}
-                className="w-16 h-16 rounded-full object-cover mx-auto mb-2"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = `https://ui-avatars.com/api/?name=${friend2.firstname}+${friend2.lastname}&background=random`;
-                }}
+                width={64}
+                height={64}
+                className="rounded-full object-cover mx-auto mb-2"
               />
               <div className="font-semibold">{friend2.firstname} {friend2.lastname}</div>
               <div className="text-sm text-muted-foreground">@{friend2.username}</div>
