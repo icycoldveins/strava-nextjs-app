@@ -11,7 +11,7 @@ const STRAVA_API_BASE = 'https://www.strava.com/api/v3';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions as any) as CustomSession;
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session || !session.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -154,7 +154,7 @@ export async function GET(request: NextRequest) {
 // POST endpoint to manually trigger PR recalculation
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions as any) as CustomSession;
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session || !session.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

@@ -6,7 +6,7 @@ import { StravaGear } from '@/lib/types/strava';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions as any) as CustomSession;
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session?.accessToken) {
       return NextResponse.json(
@@ -104,7 +104,7 @@ export async function GET(request: NextRequest) {
 // POST endpoint to fetch detailed gear information for multiple gear items
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions as any) as CustomSession;
+    const session = await getServerSession(authOptions) as CustomSession;
     
     if (!session?.accessToken) {
       return NextResponse.json(
