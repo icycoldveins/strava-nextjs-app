@@ -2,7 +2,7 @@
 
 A modern, feature-rich dashboard for Strava athletes built with Next.js 15, TypeScript, and Tailwind CSS. Track your fitness goals, monitor personal records, and analyze your performance data in one beautiful interface.
 
-![Dashboard Overview]
+
 ![alt text](<Screenshot 2025-08-22 at 11.42.03 PM.png>)
 
 ## ✨ Features
