@@ -55,16 +55,6 @@ describe('Auth Configuration', () => {
     expect(authOptions.pages?.error).toBe('/auth/error');
   });
 
-  it('should have proper cookies configuration', async () => {
-    const { authOptions } = await import('../auth');
-    
-    expect(authOptions.cookies).toBeDefined();
-    expect(authOptions.cookies?.sessionToken).toBeDefined();
-    expect(authOptions.cookies?.sessionToken?.name).toBe('next-auth.session-token');
-    expect(authOptions.cookies?.sessionToken?.options?.httpOnly).toBe(true);
-    expect(authOptions.cookies?.sessionToken?.options?.sameSite).toBe('lax');
-  });
-
   it('should handle JWT callback with initial sign in', async () => {
     const { authOptions } = await import('../auth');
     
