@@ -6,36 +6,40 @@ import {
   HeatmapViewMode,
   HeatmapValue
 } from './types/heatmap';
+import { HEATMAP_CALCULATIONS, CALCULATION_DEFAULTS } from '@/config/calculations.config';
 
 /**
  * Calculate intensity score based on distance, time, and elevation
  * Uses a weighted formula to create a meaningful activity intensity metric
  */
 export function calculateActivityIntensity(activity: HeatmapActivity): number {
-  const distanceKm = activity.distance / 1000;
-  const timeHours = activity.moving_time / 3600;
+  const config = HEATMAP_CALCULATIONS.intensity;
+  const units = CALCULATION_DEFAULTS.units;
+  
+  const distanceKm = activity.distance / units.metersToKm;
+  const timeHours = activity.moving_time / units.secondsToHours;
   const elevationM = activity.total_elevation_gain || 0;
   
   // Base score from distance (km)
-  let intensity = distanceKm * 10;
+  let intensity = distanceKm * config.distanceMultiplier;
   
   // Time bonus (hours)
-  intensity += timeHours * 20;
+  intensity += timeHours * config.timeMultiplier;
   
   // Elevation bonus
-  intensity += elevationM * 0.1;
+  intensity += elevationM * config.elevationMultiplier;
   
   // Speed bonus for high-intensity activities
   if (activity.average_speed && activity.average_speed > 0) {
-    const speedKmh = activity.average_speed * 3.6;
-    if (speedKmh > 15) { // Running/cycling pace bonus
-      intensity += (speedKmh - 15) * 2;
+    const speedKmh = activity.average_speed * units.msToKmh;
+    if (speedKmh > config.speedBonusThreshold) {
+      intensity += (speedKmh - config.speedBonusThreshold) * config.speedBonusMultiplier;
     }
   }
   
   // Heart rate bonus if available
-  if (activity.average_heartrate && activity.average_heartrate > 120) {
-    intensity += (activity.average_heartrate - 120) * 0.5;
+  if (activity.average_heartrate && activity.average_heartrate > config.heartRateThreshold) {
+    intensity += (activity.average_heartrate - config.heartRateThreshold) * config.heartRateBonusMultiplier;
   }
   
   return Math.round(intensity);
@@ -48,11 +52,13 @@ export function getActivityMetricValue(
   activity: HeatmapActivity, 
   metricType: HeatmapMetricType
 ): number {
+  const units = CALCULATION_DEFAULTS.units;
+  
   switch (metricType) {
     case 'distance':
-      return activity.distance / 1000; // Convert to km
+      return activity.distance / units.metersToKm; // Convert to km
     case 'time':
-      return activity.moving_time / 60; // Convert to minutes
+      return activity.moving_time / units.secondsToMinutes; // Convert to minutes
     case 'count':
       return 1;
     case 'intensity':
@@ -270,27 +276,33 @@ export function filterActivitiesByType(
  * Get color class based on intensity value
  */
 export function getIntensityColorClass(value: number, maxValue: number): string {
-  if (value === 0) return 'fill-gray-100 dark:fill-gray-800';
+  const breakpoints = HEATMAP_CALCULATIONS.colorBreakpoints;
+  const colors = HEATMAP_CALCULATIONS.colorClasses;
+  
+  if (value === 0) return colors.empty;
   
   const intensity = maxValue > 0 ? value / maxValue : 0;
   
-  if (intensity <= 0.2) return 'fill-orange-200 dark:fill-orange-900';
-  if (intensity <= 0.4) return 'fill-orange-300 dark:fill-orange-800';
-  if (intensity <= 0.6) return 'fill-orange-400 dark:fill-orange-700';
-  if (intensity <= 0.8) return 'fill-orange-500 dark:fill-orange-600';
-  return 'fill-orange-600 dark:fill-orange-500';
+  if (intensity <= breakpoints.low) return colors.low;
+  if (intensity <= breakpoints.mediumLow) return colors.mediumLow;
+  if (intensity <= breakpoints.medium) return colors.medium;
+  if (intensity <= breakpoints.mediumHigh) return colors.mediumHigh;
+  return colors.high;
 }
 
 /**
  * Format metric value for display
  */
 export function formatMetricValue(value: number, metricType: HeatmapMetricType): string {
+  const precision = CALCULATION_DEFAULTS.precision;
+  const units = CALCULATION_DEFAULTS.units;
+  
   switch (metricType) {
     case 'distance':
-      return `${value.toFixed(1)} km`;
+      return `${value.toFixed(precision.distance)} km`;
     case 'time':
-      const hours = Math.floor(value / 60);
-      const minutes = Math.round(value % 60);
+      const hours = Math.floor(value / units.secondsToMinutes);
+      const minutes = Math.round(value % units.secondsToMinutes);
       return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
     case 'count':
       return `${value} ${value === 1 ? 'activity' : 'activities'}`;

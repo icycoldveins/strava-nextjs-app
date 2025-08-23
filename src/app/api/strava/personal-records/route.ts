@@ -4,12 +4,11 @@ import { authOptions } from '@/lib/auth';
 import type { CustomSession } from '@/lib/auth-types';
 import { calculatePersonalRecords } from '@/lib/prCalculations';
 import { Activity } from '@/lib/types/personalRecords';
-import { mockPRAnalysis } from '@/lib/mockPRData';
 import { StravaActivity } from '@/lib/types/strava';
 
 const STRAVA_API_BASE = 'https://www.strava.com/api/v3';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions) as CustomSession;
     
@@ -17,23 +16,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { searchParams } = new URL(request.url);
-    const useMockData = searchParams.get('mock') === 'true' || process.env.NODE_ENV === 'development';
-    
-    // Return mock data for development/testing
-    if (useMockData && searchParams.get('mock') === 'true') {
-      console.log('Returning mock PR data for development');
-      return NextResponse.json({
-        ...mockPRAnalysis,
-        metadata: {
-          totalActivitiesAnalyzed: 50,
-          lastUpdated: new Date().toISOString(),
-          analysisDate: new Date().toISOString(),
-          mockData: true
-        }
-      });
-    }
-    
     // Fetch more activities for comprehensive PR analysis
     // We'll fetch multiple pages to get a good sample of historical data
     const allActivities: Activity[] = [];
