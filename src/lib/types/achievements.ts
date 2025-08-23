@@ -38,6 +38,7 @@ export interface ActivityForBadgeCheck {
   distance?: number;
   moving_time?: number;
   start_date: string;
+  start_date_local?: string;
   total_elevation_gain?: number;
   average_speed?: number;
   max_speed?: number;

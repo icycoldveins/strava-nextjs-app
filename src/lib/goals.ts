@@ -139,7 +139,7 @@ export function calculateGoalProgress(
   const endTime = new Date(goal.endDate).setHours(23, 59, 59, 999);
 
   const relevantActivities = activities.filter(activity => {
-    const activityTime = new Date(activity.start_date || activity.start_date_local).getTime();
+    const activityTime = new Date((activity.start_date as string) || (activity.start_date_local as string)).getTime();
     
     // Check date range
     if (activityTime < startTime || activityTime > endTime) {
@@ -166,7 +166,7 @@ export function calculateGoalProgress(
       break;
 
     case 'elevation':
-      current = relevantActivities.reduce((sum, act) => sum + (act.total_elevation_gain || 0), 0);
+      current = relevantActivities.reduce((sum, act) => sum + ((act.total_elevation_gain as number) || 0), 0);
       break;
   }
 

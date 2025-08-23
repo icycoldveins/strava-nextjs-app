@@ -31,7 +31,7 @@ export function calculateActivityStreaks(activities: ActivityForBadgeCheck[]): {
   const sortedActivities = activities
     .map(a => ({
       ...a,
-      date: new Date((a.start_date_local || a.start_date) as string).toDateString()
+      date: new Date(a.start_date_local || a.start_date).toDateString()
     }))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
@@ -119,7 +119,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       category: 'distance',
       rarity: 'common',
       checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
-        const runs = activities.filter(a => a.type === 'Run' && a.distance >= 10000);
+        const runs = activities.filter(a => a.type === 'Run' && (a.distance || 0) >= 10000);
         const isUnlocked = runs.length > 0;
         const longestRun = Math.max(...activities.filter(a => a.type === 'Run').map(a => a.distance || 0), 0);
         const progress = Math.min(100, (longestRun / 10000) * 100);
@@ -140,7 +140,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       category: 'distance',
       rarity: 'rare',
       checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
-        const runs = activities.filter(a => a.type === 'Run' && a.distance >= 21097);
+        const runs = activities.filter(a => a.type === 'Run' && (a.distance || 0) >= 21097);
         const isUnlocked = runs.length > 0;
         const longestRun = Math.max(...activities.filter(a => a.type === 'Run').map(a => a.distance || 0), 0);
         const progress = Math.min(100, (longestRun / 21097) * 100);
@@ -161,7 +161,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       category: 'distance',
       rarity: 'epic',
       checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
-        const runs = activities.filter(a => a.type === 'Run' && a.distance >= 42195);
+        const runs = activities.filter(a => a.type === 'Run' && (a.distance || 0) >= 42195);
         const isUnlocked = runs.length > 0;
         const longestRun = Math.max(...activities.filter(a => a.type === 'Run').map(a => a.distance || 0), 0);
         const progress = Math.min(100, (longestRun / 42195) * 100);
@@ -182,7 +182,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       category: 'distance',
       rarity: 'rare',
       checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
-        const rides = activities.filter(a => a.type === 'Ride' && a.distance >= 100000);
+        const rides = activities.filter(a => a.type === 'Ride' && (a.distance || 0) >= 100000);
         const isUnlocked = rides.length > 0;
         const longestRide = Math.max(...activities.filter(a => a.type === 'Ride').map(a => a.distance || 0), 0);
         const progress = Math.min(100, (longestRide / 100000) * 100);
@@ -203,7 +203,7 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       category: 'distance',
       rarity: 'legendary',
       checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
-        const runs = activities.filter(a => a.type === 'Run' && a.distance >= 50000);
+        const runs = activities.filter(a => a.type === 'Run' && (a.distance || 0) >= 50000);
         const isUnlocked = runs.length > 0;
         const longestRun = Math.max(...activities.filter(a => a.type === 'Run').map(a => a.distance || 0), 0);
         const progress = Math.min(100, (longestRun / 50000) * 100);
@@ -309,8 +309,9 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       rarity: 'common',
       checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const earlyActivities = activities.filter(a => {
-          const timeString = (a.start_date_local || a.start_date).split('T')[1];
-          return isActivityInTimeRange(timeString, 0, 5); // Before 6 AM (0-5:59)
+          const dateString = a.start_date_local || a.start_date;
+          const timeString = dateString.split('T')[1];
+          return timeString && isActivityInTimeRange(timeString, 0, 5); // Before 6 AM (0-5:59)
         });
         const isUnlocked = earlyActivities.length >= 5;
         const progress = Math.min(100, (earlyActivities.length / 5) * 100);
@@ -332,8 +333,9 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       rarity: 'common',
       checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const nightActivities = activities.filter(a => {
-          const timeString = (a.start_date_local || a.start_date).split('T')[1];
-          return isActivityInTimeRange(timeString, 21, 23); // After 9 PM
+          const dateString = a.start_date_local || a.start_date;
+          const timeString = dateString.split('T')[1];
+          return timeString && isActivityInTimeRange(timeString, 21, 23); // After 9 PM
         });
         const isUnlocked = nightActivities.length >= 5;
         const progress = Math.min(100, (nightActivities.length / 5) * 100);
@@ -355,7 +357,8 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       rarity: 'rare',
       checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const weekendActivities = activities.filter(a => {
-          const date = new Date(a.start_date_local || a.start_date);
+          const dateString = a.start_date_local || a.start_date;
+          const date = new Date(dateString);
           const day = date.getDay();
           return day === 0 || day === 6; // Sunday = 0, Saturday = 6
         });
@@ -425,7 +428,8 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
         const monthlyElevation = new Map<string, number>();
         
         activities.forEach(a => {
-          const date = new Date(a.start_date_local || a.start_date);
+          const dateString = a.start_date_local || a.start_date;
+          const date = new Date(dateString);
           const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
           const current = monthlyElevation.get(monthKey) || 0;
           monthlyElevation.set(monthKey, current + (a.total_elevation_gain || 0));
@@ -504,7 +508,8 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       rarity: 'common',
       checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const newYearActivities = activities.filter(a => {
-          const date = new Date(a.start_date_local || a.start_date);
+          const dateString = a.start_date_local || a.start_date;
+          const date = new Date(dateString);
           return date.getMonth() === 0 && date.getDate() === 1; // January 1st
         });
         const isUnlocked = newYearActivities.length > 0;
@@ -526,7 +531,8 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       rarity: 'common',
       checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const valentineActivities = activities.filter(a => {
-          const date = new Date(a.start_date_local || a.start_date);
+          const dateString = a.start_date_local || a.start_date;
+          const date = new Date(dateString);
           return date.getMonth() === 1 && date.getDate() === 14; // February 14th
         });
         const isUnlocked = valentineActivities.length > 0;
@@ -548,7 +554,8 @@ export function getBadgeDefinitions(): BadgeDefinition[] {
       rarity: 'rare',
       checkFunction: (activities: ActivityForBadgeCheck[]): AchievementCheckResult => {
         const christmasActivities = activities.filter(a => {
-          const date = new Date(a.start_date_local || a.start_date);
+          const dateString = a.start_date_local || a.start_date;
+          const date = new Date(dateString);
           return date.getMonth() === 11 && date.getDate() === 25; // December 25th
         });
         const isUnlocked = christmasActivities.length > 0;
@@ -644,27 +651,27 @@ function findTriggeringActivity(badgeDefinition: BadgeDefinition, activities: Ac
     case 'distance':
       // Find the activity with the longest distance of the appropriate type
       if (badgeDefinition.id.includes('run') || badgeDefinition.id.includes('marathon')) {
-        return activities
-          .filter(a => a.type === 'Run')
-          .reduce((max, current) => (current.distance > (max?.distance || 0)) ? current : max, null);
+        const runActivities = activities.filter(a => a.type === 'Run');
+        if (runActivities.length === 0) return null;
+        return runActivities.reduce((max, current) => ((current.distance || 0) > (max.distance || 0)) ? current : max);
       } else if (badgeDefinition.id.includes('ride') || badgeDefinition.id.includes('century')) {
-        return activities
-          .filter(a => a.type === 'Ride')
-          .reduce((max, current) => (current.distance > (max?.distance || 0)) ? current : max, null);
+        const rideActivities = activities.filter(a => a.type === 'Ride');
+        if (rideActivities.length === 0) return null;
+        return rideActivities.reduce((max, current) => ((current.distance || 0) > (max.distance || 0)) ? current : max);
       }
       break;
       
     case 'elevation':
       if (badgeDefinition.id === 'mountain-goat') {
-        return activities
-          .reduce((max, current) => (current.total_elevation_gain > (max?.total_elevation_gain || 0)) ? current : max, null);
+        if (activities.length === 0) return null;
+        return activities.reduce((max, current) => ((current.total_elevation_gain || 0) > (max.total_elevation_gain || 0)) ? current : max);
       }
       break;
       
     case 'speed':
-      return activities
-        .filter(a => badgeDefinition.id.includes('run') ? a.type === 'Run' : a.type === 'Ride')
-        .reduce((max, current) => (current.average_speed > (max?.average_speed || 0)) ? current : max, null);
+      const filteredActivities = activities.filter(a => badgeDefinition.id.includes('run') ? a.type === 'Run' : a.type === 'Ride');
+      if (filteredActivities.length === 0) return null;
+      return filteredActivities.reduce((max, current) => ((current.average_speed || 0) > (max.average_speed || 0)) ? current : max);
   }
   
   return activities[activities.length - 1] || null; // Return most recent activity as fallback

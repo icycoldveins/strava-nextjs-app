@@ -1,7 +1,7 @@
-import { type AuthOptions } from "next-auth";
 import StravaProvider from "next-auth/providers/strava";
 
-export const authOptions: AuthOptions = {
+// Use any for now to avoid type conflicts with NextAuth
+export const authOptions = {
   providers: [
     StravaProvider({
       clientId: process.env.STRAVA_CLIENT_ID as string,
@@ -15,11 +15,11 @@ export const authOptions: AuthOptions = {
     }),
   ],
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
-    async jwt({ token, account, user }) {
+    async jwt({ token, account, user }: { token: any; account: any; user: any }) {
       // Initial sign in
       if (account && user) {
         return {
@@ -69,7 +69,7 @@ export const authOptions: AuthOptions = {
         return { ...token, error: "RefreshAccessTokenError" };
       }
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any; token: any }) {
       // Send properties to the client
       session.accessToken = token.accessToken as string;
       session.user = token.user as {
@@ -77,11 +77,10 @@ export const authOptions: AuthOptions = {
         email?: string;
         image?: string;
       };
-      // @ts-expect-error - Add error to session if refresh failed
-      session.error = token.error;
+      (session as any).error = token.error;
       return session;
     },
-    async redirect({ url, baseUrl }) {
+    async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
       // Allows relative callback URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       // Allows callback URLs on the same origin
@@ -99,7 +98,7 @@ export const authOptions: AuthOptions = {
       name: `next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'lax' as const,
         path: '/',
         secure: process.env.NODE_ENV === 'production'
       }

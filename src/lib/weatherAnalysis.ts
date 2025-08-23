@@ -470,7 +470,30 @@ export class WeatherAnalyzer {
       correlations,
       seasonal_patterns: seasonalPatterns,
       performance_predictions: {
-        current_conditions: optimalConditions, // Placeholder
+        current_conditions: {
+          timestamp: new Date().toISOString(),
+          location: { lat: 0, lon: 0 },
+          main: {
+            temp: optimalConditions.temperature,
+            feels_like: optimalConditions.temperature,
+            temp_min: optimalConditions.temperature,
+            temp_max: optimalConditions.temperature,
+            pressure: 1013,
+            humidity: optimalConditions.humidity,
+          },
+          wind: {
+            speed: optimalConditions.wind_speed,
+            deg: 0,
+          },
+          visibility: 10000,
+          clouds: { all: 0 },
+          weather: [{
+            id: 800,
+            main: optimalConditions.weather_type,
+            description: optimalConditions.weather_type.toLowerCase(),
+            icon: '01d',
+          }],
+        },
         predicted_pace: 0,
         confidence: 0,
       },
