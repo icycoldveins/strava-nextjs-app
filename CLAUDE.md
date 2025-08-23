@@ -12,3 +12,4 @@ Compacted Prompt for Claude (TDD workflow):
 ⸻
 
 Do you want me to rewrite this into an even tighter one-liner instruction you could just drop into Claude, or keep it as this ordered checklist?
+- always run linters and npx no emit
