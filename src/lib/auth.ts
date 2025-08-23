@@ -97,8 +97,8 @@ export const authOptions: any = {
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       // Allows callback URLs on the same origin
       else if (new URL(url).origin === baseUrl) return url;
-      // Default to dashboard after sign in
-      return `${baseUrl}/dashboard`;
+      // Default to home page after sign in (which serves as the dashboard)
+      return baseUrl;
     }
   },
   pages: {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -74,11 +74,12 @@ export default function Home() {
   const [kudosData, setKudosData] = useState<{ [activityId: number]: KudoGiver[] }>({});
   const [loadingKudos, setLoadingKudos] = useState<{ [activityId: number]: boolean }>({});
 
-  // Check for refresh token error and force re-authentication
+  // Check for refresh token error and redirect to sign in
   useEffect(() => {
     // @ts-expect-error - Check for refresh error
     if (session?.error === "RefreshAccessTokenError") {
-      signIn("strava"); // Force re-authentication
+      // Redirect to sign in page to re-authenticate
+      window.location.replace("/auth/signin");
     }
   }, [session]);
 
@@ -95,10 +96,13 @@ export default function Home() {
   const achievementTimeStats = useAchievementStats(badges);
 
   useEffect(() => {
-    if (status !== "loading" && !session) {
-      signIn("strava");
+    // Only auto-redirect to sign in if we're not already in the auth flow
+    // and the session is definitively not present (not loading)
+    if (status === "unauthenticated") {
+      // Use replace to avoid adding to browser history
+      window.location.replace("/auth/signin");
     }
-  }, [session, status]);
+  }, [status]);
 
   useEffect(() => {
     if (session) {
