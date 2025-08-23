@@ -12,11 +12,15 @@ export const authOptions: any = {
       clientId: process.env.STRAVA_CLIENT_ID as string,
       clientSecret: process.env.STRAVA_CLIENT_SECRET as string,
       authorization: {
+        url: "https://www.strava.com/api/v3/oauth/authorize",
         params: { 
           scope: "read,activity:read_all,profile:read_all",
-          approval_prompt: "auto"
+          approval_prompt: "auto",
+          response_type: "code"
         }
-      }
+      },
+      token: "https://www.strava.com/api/v3/oauth/token",
+      userinfo: "https://www.strava.com/api/v3/athlete"
     }),
   ],
   session: {
