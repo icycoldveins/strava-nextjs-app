@@ -10,17 +10,7 @@
     },
     "src/app/api/strava/*/route.ts": {
       "maxDuration": 10
-    },
-    "src/app/api/weather/route.ts": {
-      "maxDuration": 10
     }
-  },
-  "env": {
-    "NEXTAUTH_URL": "@nextauth-url",
-    "NEXTAUTH_SECRET": "@nextauth-secret",
-    "STRAVA_CLIENT_ID": "@strava-client-id",
-    "STRAVA_CLIENT_SECRET": "@strava-client-secret",
-    "OPENWEATHER_API_KEY": "@openweather-api-key"
   },
   "github": {
     "silent": false

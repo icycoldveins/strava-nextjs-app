@@ -7,9 +7,6 @@ const requiredEnvVars = {
   // Strava OAuth
   STRAVA_CLIENT_ID: process.env.STRAVA_CLIENT_ID,
   STRAVA_CLIENT_SECRET: process.env.STRAVA_CLIENT_SECRET,
-  
-  // Weather API (optional but recommended)
-  OPENWEATHER_API_KEY: process.env.OPENWEATHER_API_KEY,
 } as const;
 
 // Validate required environment variables
@@ -35,11 +32,6 @@ export function validateEnv() {
       `Missing required environment variables: ${missing.join(', ')}\n` +
       'Please check your .env.local file or Vercel environment variables.'
     );
-  }
-  
-  // Warn about optional vars
-  if (!process.env.OPENWEATHER_API_KEY) {
-    console.warn('Warning: OPENWEATHER_API_KEY is not set. Weather features will be limited.');
   }
   
   return requiredEnvVars;

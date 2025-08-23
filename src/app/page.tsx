@@ -17,7 +17,6 @@ import { BadgeUnlockToast } from "@/components/achievements/BadgeUnlockToast";
 import { useAchievements, useBadgesWithProgress, useAchievementStats } from "@/hooks/useAchievements";
 import { TrainingHeatmap } from "@/components/analytics/TrainingHeatmap";
 import { PRDashboard } from "@/components/analytics/PRDashboard";
-import { WeatherImpact } from "@/components/analytics/WeatherImpact";
 import type { StravaActivity as ImportedStravaActivity } from "@/lib/types/strava";
 
 interface Stats {
@@ -467,11 +466,6 @@ export default function Home() {
               </Button>
             </div>
             <PRDashboard className="" />
-          </div>
-
-          {/* Weather Impact Analysis */}
-          <div className="mb-8">
-            <WeatherImpact />
           </div>
 
           {/* Recent Activities */}
