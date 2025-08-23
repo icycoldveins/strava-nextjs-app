@@ -32,10 +32,13 @@ yarn-error.log*
 
 # env files
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.check
+.env.production
 # Keep example env file
 !.env.example
 

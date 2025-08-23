@@ -15,7 +15,7 @@ export default function SignInClient() {
 
   const handleSignIn = async () => {
     setIsLoading(true);
-    await signIn("strava", { callbackUrl: "/" });
+    await signIn("strava", { callbackUrl: "/dashboard" });
   };
 
   const getErrorMessage = () => {
